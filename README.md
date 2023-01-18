@@ -1,0 +1,1 @@
+# picachu-emotion-service-private
