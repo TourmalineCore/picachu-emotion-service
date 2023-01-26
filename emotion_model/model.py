@@ -6,9 +6,8 @@ from logic import ModelLogic
 
 
 class Model(ModelBase, ABC):
-    def __init__(self, model_name,model_type):
+    def __init__(self, model_type):
         super().__init__(
-            model_name=model_name,
             model_type=model_type,
 
         )
@@ -20,17 +19,13 @@ class Model(ModelBase, ABC):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-n","--name",dest="name",type=str,help="model name",)
-    parser.add_argument("-t","--type",dest="type",type=str,help="model type",)
+    parser.add_argument("-t", "--type", dest="type", type=str, help="model type",)
 
     args = parser.parse_args()
 
-    model_name = args.name
     model_type = args.type
 
-    if model_name is None:
-        raise Exception("Model name is unspecified")
     if model_type is None:
         raise Exception("Model type is unspecified")
 
-    Model(model_name=model_name,model_type=model_type).run()
+    Model(model_type=model_type).run()

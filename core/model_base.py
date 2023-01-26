@@ -39,25 +39,16 @@ models_retry_queue_name = queues_config.rabbitmq_models_retry_queue_name
 
 class ModelBase(ABC):
     def __init__(self, model_name,model_type):
-        """Instantiation of the abstract Searcher Base
-
-        Args:
-            searcher_category (string): Searcher category, e.g. 'demographic'
-            searcher_type (string): Searcher type - unique identifier, e.g. 'demographic-searcher-demo'
-            requests_stream_processing_occurrence_number (int, optional): Internal
-                occurrence number that triggers processing. Defaults to None.
-        """
         super().__init__()
 
-        self.model_name = model_name
         self.model_type = model_type
 
         self.result_producer = ModelResultProducer(
-            self.model_name,
+            self.model_type,
         )
 
     def get_queue_name(self):
-        return f'{self.model_name}-queue'
+        return f'{self.model_type}-queue'
 
     def run(self):
         model_queue_name = self.get_queue_name()
@@ -152,22 +143,16 @@ class ModelBase(ABC):
             )
             print(result)
 
-            self.result_producer.produce_successful_message(
+            self.result_producer.produce_message(
                 result
             )
 
             logging.debug('Message processing finished at={0}'.format(datetime.utcnow()))
 
         except Exception as e:
-            logging.error('Unexpected error occurred: {0}'.format(repr(traceback.format_exc())))
+            logging.error('Unexpected error occurred: {0}'.format(e))
 
             if retry_count >= rabbitmq_models_max_retry_number:
-                result_type = f'{self.model_name}-result'
-
-                self.result_producer.produce_failed_message(
-                    message,
-                    result_type,
-                )
                 channel.basic_ack(delivery_tag=method_frame.delivery_tag)
                 logging.info('Cannot be processed (acknowledged)')
             else:

@@ -25,42 +25,13 @@ class ModelResultProducer:
         super().__init__()
         self.model_type = model_type
 
-    def produce_successful_message(
+    def produce_message(
             self,
             result,
     ):
         if not isinstance(result, ModelResult):
             raise ValueError('result should be an instance of ModelResult')
 
-        self._produce_result_message(
-            result
-        )
-
-    # def produce_failed_message(
-    #         self,
-    #         request_message,
-    #         client_request_id,
-    #         result_type,
-    #         request_processing_started_at_utc,
-    # ):
-    #     failed_result = ModelResult(
-    #         'Result generation failed.',
-    #         {},  # empty object because it's not nullable column in sf-api db
-    #         result_type,
-    #         1,
-    #         ModelResultStatuses.failed,
-    #     )
-    #
-    #     self._produce_result_message(
-    #         client_request_id,
-    #         failed_result,
-    #         request_processing_started_at_utc,
-    #     )
-
-    def _produce_result_message(
-            self,
-            result: ModelResult,
-    ):
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=rabbitmq_host,
@@ -72,30 +43,7 @@ class ModelResultProducer:
 
         channel.queue_declare(queue=queue_name, durable=True)
 
-        # body = {
-        #     'version': 3,
-        #     'searchingParameters': request_message,
-        #     'result': {
-        #         'description': searcher_result.description,
-        #         'data': searcher_result.data,
-        #         'resultType': searcher_result.result_type,
-        #         'status': searcher_result.status.value,
-        #         'schemaVersion': searcher_result.schema_version
-        #     },
-        #     'meta': {
-        #         'searcher': {
-        #             'searcherType': self.searcher_type,
-        #             'searcherSessionId': self.searcher_session_id,
-        #             'processingOccurrenceNumber': self.requests_stream_processing_occurrence_number,
-        #             'messageId': str(uuid.uuid4()),
-        #             'messageSentAtUtc': str(datetime.utcnow()),
-        #             'requestProcessingStartedAtUtc': str(request_processing_started_at_utc)
-        #         }
-        #     }
-        # }
-
         body_str = json.dumps(result.__dict__)
-        print(body_str)
         channel.basic_publish(
             exchange='',
             routing_key=queue_name,

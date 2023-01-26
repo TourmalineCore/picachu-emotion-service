@@ -29,4 +29,4 @@ RUN poetry install --no-interaction --no-ansi
 
 RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
 
-CMD ["poetry", "run", "python", "./emotion_model/model.py", "--name", "emotion_model","--type","emotion"]
+CMD ["poetry", "run", "python", "./emotion_model/model.py","--type","emotion"]
