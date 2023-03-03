@@ -2,17 +2,17 @@ version: '3.8'
 
 services:
   run-model-locally:
-    container_name: emotion_model-local-starter
+    container_name: model-local-starter
     restart: "no"
     image: tianon/true
     depends_on:
       - emotion-model
 
   emotion-model:
-    container_name: emotion_model
+    container_name: emotion-model
     build:
       context: .
-    command: poetry run python ./emotion_model/model.py --name emotion_model  --type emotion
+    command: poetry run python ./application.py
     image: emotion-model:latest
     restart: unless-stopped
     volumes:
