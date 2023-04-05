@@ -16,7 +16,7 @@ jobs:
 
       - name: build and push image
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+          docker login ghcr.io -u ${{ secrets.GH_REGISTRY_USERNAME }} -p ${{ secrets.GH_REGISTRY_TOKEN }}
           docker build -t emotional-model/test:latest .
           docker push emotional-model/test:latest
        
