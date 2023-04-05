@@ -16,7 +16,7 @@ jobs:
 
       - name: build and push image
         run: |
-          docker login ghcr.io -u ${{ secrets.GH_REGISTRY_USERNAME }} -p ${{ secrets.GH_REGISTRY_TOKEN }}
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
           docker build -t ghcr.io/tourmalinecore/picachu/emotional-model/test:latest .
           docker push ghcr.io/tourmalinecore/picachu/emotional-model/test:latest
        
@@ -24,7 +24,7 @@ jobs:
     needs: test-and-report
     runs-on: ubuntu-22.04
     container:
-      image: emotional-model/test:latest
+      image: ghcr.io/tourmalinecore/picachu/emotional-model/test:latest
     steps:
       - uses: actions/checkout@v3
         with:
