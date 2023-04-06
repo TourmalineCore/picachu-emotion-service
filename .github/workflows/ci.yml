@@ -39,6 +39,8 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           
+      - uses: iterative/setup-cml@v1
+
       - uses: iterative/setup-dvc@v1
       
       - name: cml
@@ -46,3 +48,5 @@ jobs:
         # repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           dvc repro
+          cat metrics.json >> report.md
+          cml comment create report.md
