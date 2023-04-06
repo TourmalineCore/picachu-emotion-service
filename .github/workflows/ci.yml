@@ -29,6 +29,10 @@ jobs:
         username: ${{ secrets.GH_REGISTRY_USERNAME }}
         password: ${{ secrets.GH_REGISTRY_TOKEN }}
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          
       - uses: iterative/setup-dvc@v1
       
       - name: cml
