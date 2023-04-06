@@ -18,10 +18,11 @@ jobs:
         id: filter
         with:
           filters: |
-            Dockerfile:
+            dockerfile:
               'Dockerfile'
 
       - name: build and push image
+        if: steps.changes.outputs.dockerfile = 'true'
         run: |
           docker login ghcr.io -u ${{ secrets.GH_REGISTRY_USERNAME }} -p ${{ secrets.GH_REGISTRY_TOKEN }}
           docker build -t ghcr.io/tourmalinecore/picachu/emotional-model/test:latest .
