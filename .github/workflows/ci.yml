@@ -6,19 +6,19 @@ on:
       - feature/#85zrv2enc-add-dvc-pipeline
 
 jobs:
-  test-and-report:
-    runs-on: ubuntu-22.04
+  # test-and-report:
+  #   runs-on: ubuntu-22.04
 
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: build and push image
-        run: |
-          docker login ghcr.io -u ${{ secrets.GH_REGISTRY_USERNAME }} -p ${{ secrets.GH_REGISTRY_TOKEN }}
-          docker build -t ghcr.io/tourmalinecore/picachu/emotional-model/test:latest .
-          docker push ghcr.io/tourmalinecore/picachu/emotional-model/test:latest
+  #     - name: build and push image
+  #       run: |
+  #         docker login ghcr.io -u ${{ secrets.GH_REGISTRY_USERNAME }} -p ${{ secrets.GH_REGISTRY_TOKEN }}
+  #         docker build -t ghcr.io/tourmalinecore/picachu/emotional-model/test:latest .
+  #         docker push ghcr.io/tourmalinecore/picachu/emotional-model/test:latest
        
   test-and-report-2:
     needs: test-and-report
