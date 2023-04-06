@@ -6,11 +6,17 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score
 from model.emotion_model import model
 from model.emotion_model import processor
 from model.emotion_model import EMOTION_LABELS
+import zipfile
 
 
 DEVICE = 'cpu'
 
-os.system('unzip ./tests/test_photos.zip -d ./tests')
+# os.system('unzip ./tests/test_photos.zip -d ./tests')
+zip_dataset_path = './tests/test_photos.zip'
+zip_dataset_path_to_extract = './tests/test_photos.zip'
+zip_dataset = zipfile.ZipFile(zip_dataset_path)
+zip_dataset.extractall(zip_dataset_path_to_extract)
+zip_dataset.close()
 
 labels = os.listdir('./tests/test_photos/')
 
