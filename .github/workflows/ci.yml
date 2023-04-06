@@ -15,14 +15,14 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - uses: dorny/paths-filter@v2
-        id: filter
+        id: changes
         with:
           filters: |
             dockerfile:
               'Dockerfile'
 
       - name: build and push image
-        if: steps.changes.outputs.dockerfile = 'true'
+        if: steps.changes.outputs.dockerfile == 'true'
         run: |
           docker login ghcr.io -u ${{ secrets.GH_REGISTRY_USERNAME }} -p ${{ secrets.GH_REGISTRY_TOKEN }}
           docker build -t ghcr.io/tourmalinecore/picachu/emotional-model/test:latest .
