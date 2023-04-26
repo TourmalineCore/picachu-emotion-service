@@ -1,0 +1,55 @@
+name: test emotion model
+
+on:
+  push:
+    branches:
+      - feature/#85zrv2enc-add-dvc-pipeline
+
+jobs:
+  test-and-report:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: tj-actions/changed-files@v35
+        id: changed-dockerfile
+        with:
+          files: Dockerfile 
+
+      - name: build and push image
+        if: steps.changed-dockerfile.outputs.any-changed == 'true'
+        run: |
+          docker login ghcr.io -u ${{ secrets.GH_REGISTRY_USERNAME }} -p ${{ secrets.GH_REGISTRY_TOKEN }}
+          docker build -t ghcr.io/tourmalinecore/picachu/emotional-model/test:latest .
+          docker push ghcr.io/tourmalinecore/picachu/emotional-model/test:latest
+       
+  test-and-report-2:
+    needs: test-and-report
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/tourmalinecore/picachu/emotional-model/test:latest
+      credentials:
+        username: ${{ secrets.GH_REGISTRY_USERNAME }}
+        password: ${{ secrets.GH_REGISTRY_TOKEN }}
+    steps:
+      # - uses: actions/setup-node@v3
+        # with:
+          # node-version: '16'
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          
+      # - uses: iterative/setup-cml@v1
+
+      - uses: iterative/setup-dvc@v1
+      
+      - name: cml
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Can use the default token for most functions
+        run: |
+          dvc repro
+          echo "$(cat metrics.json)"

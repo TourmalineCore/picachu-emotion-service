@@ -1,0 +1,9 @@
+stages:
+  test-model:
+    cmd: python ./tests/test_emotions.py
+    deps:
+    - ./tests/test_photos.zip
+    - ./tests/test_emotions.py
+    metrics:
+    - metrics.json:
+        cache: false
